@@ -54,17 +54,15 @@ pipeline {
         }
         stage("Docker Login"){
             steps {
-                container('maven'){
-                    sh '''echo $HARBOR_CREDENTIAL_PSW | docker login $REGISTRY -u $HARBOR_CREDENTIAL_USR --password-stdin"'''
-                }
+                
+                    sh 'echo $HARBOR_CREDENTIAL_PSW | docker login $REGISTRY -u $HARBOR_CREDENTIAL_USR --password-stdin"'
+                
             }
         }
         stage("Build & Push"){
             steps {
-                container('maven'){
                     sh 'docker build -t $REGISTRY/$HARBOR_NAMESPACE/$APP_NAME:$RELEASE .'
                     sh 'docker push $REGISTRY/$HARBOR_NAMESPCAE/$APP_NAME:$RELEASE'
-                }
             }
         }
     }
