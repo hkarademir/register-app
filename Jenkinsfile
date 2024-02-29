@@ -55,7 +55,7 @@ pipeline {
         stage("Build & Push Docker Image"){
             steps {
                 script {
-                    docker.withRegistry('${REGISTRY}', 'jenkins-harbor-token'){
+                    docker.withRegistry('${REGISTRY}', 'harbor-robot-account'){
                         def customImage = docker.build('${HARBOR_NAMESPACE}/${APP_NAME}:${RELEASE}')
 
                         customImage.push()
