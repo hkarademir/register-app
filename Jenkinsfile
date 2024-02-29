@@ -13,7 +13,7 @@ pipeline {
         PROJECT_NAME = 'register-app'
         APP_NAME = 'register-app-pipeline'
         RELEASE = '1.0.0'
-        HARBOR_CREDENTIALS = credentials('jenkins-harbor-user')
+        HARBOR_CREDENTIALS = credentials('harbor-robot-account')
         IMAGE_NAME = "${REGISTRY}" + '/' + "${PROJECT_NAME}" + '/' + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
     }
