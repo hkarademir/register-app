@@ -14,8 +14,8 @@ pipeline {
         APP_NAME = 'register-app-pipeline'
         RELEASE = '1.0.1'
         HARBOR_CREDENTIALS = credentials('harbor-robot-account')
-        HARBOR_USER = 'jenkins'
-        HARBOR_PASS = 'jenkins-harbor-user'
+        DOCKER_USER = 'jenkins'
+        DOCKER_PASS = 'jenkins-harbor-user'
         IMAGE_NAME = "${REGISTRY}" + '/' + "${PROJECT_NAME}" + '/' + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
     }
@@ -56,20 +56,19 @@ pipeline {
                 }
             }
         }
-        stage('Build & Push Docker Image'){
-            steps{
+        stage('Build & Push Docker Image') {
+            steps {
                 script {
-                    docker.withRegistry("${REGISTRY}", "${DOCKER_PASS}"){
+                    docker.withRegistry("${REGISTRY}", "${DOCKER_PASS}") {
                         docker_image = docker.build "${IMAGE_NAME}"
                     }
-                    docker.withRegistry("${REGISTRY}", "${DOCKER_PASS}"){
+                    docker.withRegistry("${REGISTRY}", "${DOCKER_PASS}") {
                         docker_image.push("${IMAGE_TAG}")
                         docker_image.push('latest')
                     }
                 }
             }
         }
-
     }
     post {
         always {
