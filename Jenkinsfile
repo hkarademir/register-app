@@ -12,9 +12,9 @@ pipeline {
         REGISTRY = 'harbor.y4test.local'
         PROJECT_NAME = 'register-app'
         APP_NAME = 'register-app-pipeline'
-        RELEASE = '1.0.1'
-        HARBOR_CREDENTIALS = credentials('harbor-robot-account')
-        DOCKER_USER = 'jenkins'
+        RELEASE = '1.0.2'
+        // HARBOR_CREDENTIALS = credentials('harbor-robot-account')
+        // DOCKER_USER = 'jenkins'
         DOCKER_PASS = 'jenkins-harbor-user'
         IMAGE_NAME = "${REGISTRY}" + '/' + "${PROJECT_NAME}" + '/' + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
@@ -59,10 +59,10 @@ pipeline {
         stage('Build & Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("https://harbor.y4test.local", "${DOCKER_PASS}") {
+                    docker.withRegistry("https://${REGISTRY}", "${DOCKER_PASS}") {
                         docker_image = docker.build "${IMAGE_NAME}"
                     }
-                    docker.withRegistry("https://harbor.y4test.local", "${DOCKER_PASS}") {
+                    docker.withRegistry("https://${REGISTRY}", "${DOCKER_PASS}") {
                         docker_image.push("${IMAGE_TAG}")
                         docker_image.push('latest')
                     }
