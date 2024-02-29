@@ -9,7 +9,7 @@ pipeline {
         maven 'Maven3'
     }
     environment {
-        REGISTRY = 'https://harbor.y4test.local'
+        REGISTRY = 'harbor.y4test.local'
         PROJECT_NAME = 'register-app'
         APP_NAME = 'register-app-pipeline'
         RELEASE = '1.0.1'
@@ -59,10 +59,10 @@ pipeline {
         stage('Build & Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("${REGISTRY}", "${DOCKER_PASS}") {
+                    docker.withRegistry("https://harbor.y4test.local", "${DOCKER_PASS}") {
                         docker_image = docker.build "${IMAGE_NAME}"
                     }
-                    docker.withRegistry("${REGISTRY}", "${DOCKER_PASS}") {
+                    docker.withRegistry("https://harbor.y4test.local", "${DOCKER_PASS}") {
                         docker_image.push("${IMAGE_TAG}")
                         docker_image.push('latest')
                     }
