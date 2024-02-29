@@ -13,7 +13,7 @@ pipeline {
         HARBOR_NAMESPACE = 'ks-devops-harbor'
         APP_NAME = 'register-app-pipeline'
         RELEASE = '1.0.0'
-        HARBOR_CREDENTIAL = 'harbor-robot-account'
+        HARBOR_CREDENTIALS = credentials('jenkins-harbor-user')
         IMAGE_NAME = "${REGISTRY}" + '/' + "${HARBOR_NAMESPACE}" + '/' + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
     }
@@ -54,19 +54,25 @@ pipeline {
                 }
             }
         }
-        stage("Build & Push Docker Image"){
+        stage('Build') {
             steps {
-                script {
-                    docker.withRegistry(REGISTRY, HARBOR_CREDENTIAL){
-                        docker_image = docker.build "${IMAGE_NAME}"
-                    }
-
-                    docker.withRegistry(REGISTRY, HARBOR_CREDENTIAL){
-                        docker_image.push("${IMAGE_TAG}")
-                        docker_image.push('latest')
-                    }
-                }
+                sh 'docker build -t $REGISTRY/$HARBOR_NAMESPACE/$APP_NAME:$RELEASE .'
             }
+        }
+        stage('Docker Login') {
+            steps {
+                sh 'echo $HARBOR_CREDENTIALS_PSW | docker login $REGISTRY -u $HARBOR_CREDENTIALS_USR --password-stdin'
+            }
+        }
+        stage('Push') {
+            steps {
+                sh 'docker push $REGISTRY/$HARBOR_NAMESPCAE/$APP_NAME:$RELEASE'
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker logout'
         }
     }
 }
