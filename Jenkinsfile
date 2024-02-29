@@ -8,6 +8,13 @@ pipeline {
         jdk 'Java17'
         maven 'Maven3'
     }
+    environment {
+        REGISTRY = "harbor.y4test.local"
+        HARBOR_NAMESPACE = 'ks-devops-harbor'
+        APP_NAME = "register-app-pipeline"
+        RELEASE = "1.0.0"
+        HARBOR_CREDENTIAL = credentials('jenkins-harbor-token')
+    }
     stages {
         stage("Cleanup Workspace"){
             steps {
@@ -42,6 +49,24 @@ pipeline {
             steps{
                 script{
                     waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
+                }
+            }
+        }
+        stage("Docker Login"){
+            steps {
+                container('maven'){
+                    sh '''echo $HARBOR_CREDENTIAL_PSW | docker login $REGISTRY -u "robot$jenkins-account --password-stdin"'''
+                }
+                script {
+                    docker.
+                }
+            }
+        }
+        stage("Build & Push"){
+            steps {
+                container('maven'){
+                    sh 'docker build -t $REGISTRY/$HARBOR_NAMESPACE/$APP_NAME:$RELEASE .'
+                    sh 'docker push $REGISTRY/$HARBOR_NAMESPCAE/$APP_NAME:$RELEASE'
                 }
             }
         }
