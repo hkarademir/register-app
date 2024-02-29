@@ -54,15 +54,18 @@ pipeline {
                 }
             }
         }
-        stage("Docker Login"){
+        stage("Build & Push Docker Image"){
             steps {
-                sh 'echo $HARBOR_CREDENTIAL_PSW | docker login $REGISTRY -u $HARBOR_CREDENTIAL_USR --password-stdin'
-            }
-        }
-        stage("Build & Push"){
-            steps {
-                    sh 'docker build -t $REGISTRY/$HARBOR_NAMESPACE/$APP_NAME:$RELEASE .'
-                    sh 'docker push $REGISTRY/$HARBOR_NAMESPCAE/$APP_NAME:$RELEASE'
+                script {
+                    docker.withRegistry(REGISTRY, HARBOR_CREDENTIAL){
+                        docker_image = docker.build "${IMAGE_NAME}"
+                    }
+
+                    docker.withRegistry(REGISTRY, HARBOR_CREDENTIAL){
+                        docker_image.push("${IMAGE_TAG}")
+                        docker_image.push('latest')
+                    }
+                }
             }
         }
     }
