@@ -10,11 +10,11 @@ pipeline {
     }
     environment {
         REGISTRY = 'harbor.y4test.local'
-        HARBOR_NAMESPACE = 'ks-devops-harbor'
+        PROJECT_NAME = 'register-app'
         APP_NAME = 'register-app-pipeline'
         RELEASE = '1.0.0'
         HARBOR_CREDENTIALS = credentials('jenkins-harbor-user')
-        IMAGE_NAME = "${REGISTRY}" + '/' + "${HARBOR_NAMESPACE}" + '/' + "${APP_NAME}"
+        IMAGE_NAME = "${REGISTRY}" + '/' + "${PROJECT_NAME}" + '/' + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
     }
     stages {
@@ -56,7 +56,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'docker build -t $REGISTRY/$HARBOR_NAMESPACE/$APP_NAME:$RELEASE .'
+                sh 'docker build -t $REGISTRY/$PROJECT_NAME/$APP_NAME:$RELEASE .'
             }
         }
         stage('Docker Login') {
@@ -66,7 +66,7 @@ pipeline {
         }
         stage('Push') {
             steps {
-                sh 'docker push $REGISTRY/$HARBOR_NAMESPACE/$APP_NAME:$RELEASE'
+                sh 'docker push $REGISTRY/$PROJECT_NAME/$APP_NAME:$RELEASE'
             }
         }
     }
