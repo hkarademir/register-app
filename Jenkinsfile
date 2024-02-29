@@ -9,7 +9,7 @@ pipeline {
         maven 'Maven3'
     }
     environment {
-        REGISTRY = 'harbor.y4test.local'
+        REGISTRY = 'https://harbor.y4test.local'
         PROJECT_NAME = 'register-app'
         APP_NAME = 'register-app-pipeline'
         RELEASE = '1.0.1'
