@@ -13,8 +13,6 @@ pipeline {
         PROJECT_NAME = 'register-app'
         APP_NAME = 'register-app-pipeline'
         RELEASE = '1.0.2'
-        // HARBOR_CREDENTIALS = credentials('harbor-robot-account')
-        // DOCKER_USER = 'jenkins'
         DOCKER_PASS = 'jenkins-harbor-user'
         IMAGE_NAME = "${REGISTRY}" + '/' + "${PROJECT_NAME}" + '/' + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
@@ -66,6 +64,14 @@ pipeline {
                         docker_image.push("${IMAGE_TAG}")
                         docker_image.push('latest')
                     }
+                }
+            }
+        }
+        stage('Cleanup Artifacts') {
+            steps {
+                script {
+                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker rmi ${IMAGE_NAME}:latest"
                 }
             }
         }
