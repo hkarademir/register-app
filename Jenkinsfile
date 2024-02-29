@@ -66,7 +66,7 @@ pipeline {
         }
         stage('Push') {
             steps {
-                sh 'docker push $REGISTRY/$HARBOR_NAMESPCAE/$APP_NAME:$RELEASE'
+                sh 'docker push $REGISTRY/$HARBOR_NAMESPACE/$APP_NAME:$RELEASE'
             }
         }
     }
