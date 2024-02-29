@@ -52,15 +52,15 @@ pipeline {
                 }
             }
         }
-        stage("Docker Login"){
+        stage("Build & Push Docker Image"){
             steps {
-                sh 'echo $HARBOR_CREDENTIAL_PSW | docker login $REGISTRY -u $HARBOR_CREDENTIAL_USR --password-stdin'
-            }
-        }
-        stage("Build & Push"){
-            steps {
-                    sh 'docker build -t $REGISTRY/$HARBOR_NAMESPACE/$APP_NAME:$RELEASE .'
-                    sh 'docker push $REGISTRY/$HARBOR_NAMESPCAE/$APP_NAME:$RELEASE'
+                script {
+                    docker.withRegistry('${REGISTRY}', 'jenkins-harbor-token'){
+                        def customImage = docker.build('${HARBOR_NAMESPACE}/${APP_NAME}:${RELEASE}')
+
+                        customImage.push()
+                    }
+                }
             }
         }
     }
