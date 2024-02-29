@@ -55,7 +55,7 @@ pipeline {
         stage("Docker Login"){
             steps {
                 container('maven'){
-                    sh '''echo $HARBOR_CREDENTIAL_PSW | docker login $REGISTRY -u "robot$jenkins-account --password-stdin"'''
+                    sh '''echo $HARBOR_CREDENTIAL_PSW | docker login $REGISTRY -u $HARBOR_CREDENTIAL_USR --password-stdin"'''
                 }
             }
         }
