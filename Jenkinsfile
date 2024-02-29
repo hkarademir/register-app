@@ -54,9 +54,7 @@ pipeline {
         }
         stage("Docker Login"){
             steps {
-                
-                    sh 'echo $HARBOR_CREDENTIAL_PSW | docker login $REGISTRY -u $HARBOR_CREDENTIAL_USR --password-stdin"'
-                
+                sh 'echo $HARBOR_CREDENTIAL_PSW | docker login $REGISTRY -u $HARBOR_CREDENTIAL_USR --password-stdin"'
             }
         }
         stage("Build & Push"){
